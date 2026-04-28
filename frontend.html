@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PlayConnDB — Lahore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0a0d0a;
+  --surface:  #111711;
+  --card:     #161d16;
+  --border:   #1e2b1e;
+  --green:    #2aff6b;
+  --orange:   #ff6b2a;
+  --text:     #e8f0e8;
+  --muted:    #6b816b;
+  --danger:   #ff4444;
+  --gold:     #ffd84a;
+  --radius:   6px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.6;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4;
+}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;height:60px;
+  background:rgba(10,13,10,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.8rem;letter-spacing:2px;
+  color:var(--green);
+  text-shadow:0 0 20px rgba(42,255,107,.3);
+}
+.nav-logo span{color:var(--orange)}
+.nav-tabs{display:flex;gap:.25rem}
+.nav-tab{
+  padding:.45rem 1rem;font-size:.82rem;font-weight:500;
+  background:transparent;border:none;color:var(--muted);
+  cursor:pointer;border-radius:var(--radius);
+  transition:all .2s;letter-spacing:.5px;
+  font-family:'DM Sans',sans-serif;
+}
+.nav-tab:hover{color:var(--text);background:var(--border)}
+.nav-tab.active{color:var(--green);background:rgba(42,255,107,.1)}
+
+.user-pill{
+  display:flex;align-items:center;gap:.6rem;
+  padding:.3rem .8rem;border-radius:20px;
+  background:var(--surface);border:1px solid var(--border);
+  cursor:pointer;font-size:.82rem;
+}
+.user-avatar{
+  width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--orange));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;color:#000;
+}
+.notif-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--orange);
+  animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+/* ── PAGES ── */
+.page{display:none;padding:2rem;max-width:1100px;margin:0 auto;animation:fadeUp .4s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HERO (Dashboard) ── */
+.hero{
+  position:relative;overflow:hidden;
+  padding:3rem 2.5rem;margin-bottom:2rem;
+  border-radius:12px;
+  background:linear-gradient(135deg,#0d1a0d 0%,#0a0d0a 50%,#1a0d00 100%);
+  border:1px solid var(--border);
+}
+.hero::before{
+  content:'';position:absolute;top:-50%;right:-20%;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(42,255,107,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero::after{
+  content:'';position:absolute;bottom:-40%;left:-10%;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,42,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-label{
+  font-family:'Space Mono',monospace;font-size:.7rem;
+  color:var(--orange);letter-spacing:2px;text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.hero-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.5rem,5vw,4rem);
+  line-height:1;letter-spacing:1px;
+  margin-bottom:.75rem;
+}
+.hero-title em{color:var(--green);font-style:normal}
+.hero-sub{color:var(--muted);font-size:.95rem;max-width:480px}
+
+/* ── SEARCH BAR ── */
+.search-wrap{
+  display:flex;gap:.5rem;margin:1.5rem 0;
+}
+.search-input{
+  flex:1;padding:.75rem 1rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.search-input:focus{border-color:var(--green)}
+.search-input::placeholder{color:var(--muted)}
+
+/* ── BUTTONS ── */
+.btn{
+  padding:.65rem 1.25rem;border-radius:var(--radius);
+  font-family:'DM Sans',sans-serif;font-size:.85rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;letter-spacing:.3px;
+}
+.btn-green{background:var(--green);color:#000}
+.btn-green:hover{background:#22e05e;transform:translateY(-1px);box-shadow:0 4px 16px rgba(42,255,107,.3)}
+.btn-orange{background:var(--orange);color:#000}
+.btn-orange:hover{background:#e05922;transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:var(--muted)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(255,68,68,.3)}
+.btn-danger:hover{background:rgba(255,68,68,.1)}
+.btn-sm{padding:.4rem .8rem;font-size:.78rem}
+
+/* ── GRID LAYOUTS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+@media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* ── CARDS ── */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:1.25rem;
+  transition:border-color .2s,transform .2s;
+}
+.card:hover{border-color:rgba(42,255,107,.2)}
+
+.match-card{position:relative;overflow:hidden}
+.match-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--green),var(--orange));
+  opacity:0;transition:opacity .2s;
+}
+.match-card:hover::before{opacity:1}
+
+.sport-badge{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:600;
+  background:rgba(42,255,107,.1);color:var(--green);
+  border:1px solid rgba(42,255,107,.2);
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.status-badge{
+  display:inline-block;padding:.15rem .55rem;border-radius:20px;
+  font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px;
+}
+.status-open{background:rgba(42,255,107,.1);color:var(--green)}
+.status-full{background:rgba(255,107,42,.1);color:var(--orange)}
+.status-completed{background:rgba(107,129,107,.1);color:var(--muted)}
+.status-teams{background:rgba(255,216,74,.1);color:var(--gold)}
+.status-canceled{background:rgba(255,68,68,.1);color:var(--danger)}
+
+.capacity-bar{
+  height:4px;border-radius:2px;
+  background:var(--border);margin-top:.5rem;overflow:hidden;
+}
+.capacity-fill{
+  height:100%;border-radius:2px;
+  background:linear-gradient(90deg,var(--green),var(--orange));
+  transition:width .5s ease;
+}
+
+.match-meta{
+  display:flex;flex-wrap:wrap;gap:.5rem;
+  font-size:.78rem;color:var(--muted);margin:.6rem 0;
+}
+.match-meta span{display:flex;align-items:center;gap:.3rem}
+
+.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.6rem;letter-spacing:1px;
+  margin-bottom:1.2rem;color:var(--text);
+}
+.section-title span{color:var(--green)}
+
+/* ── STAT CARDS ── */
+.stat-card{
+  text-align:center;padding:1.5rem;
+}
+.stat-num{
+  font-family:'Bebas Neue',sans-serif;font-size:3rem;
+  line-height:1;
+}
+.stat-num.green{color:var(--green)}
+.stat-num.orange{color:var(--orange)}
+.stat-num.gold{color:var(--gold)}
+.stat-label{font-size:.75rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:.25rem}
+
+/* ── FORMS ── */
+.form-group{margin-bottom:1.1rem}
+.form-label{
+  display:block;font-size:.78rem;font-weight:600;
+  color:var(--muted);letter-spacing:.5px;text-transform:uppercase;
+  margin-bottom:.4rem;
+}
+.form-control{
+  width:100%;padding:.7rem .9rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:.9rem;
+  outline:none;transition:border-color .2s;
+}
+.form-control:focus{border-color:var(--green)}
+.form-control::placeholder{color:var(--muted)}
+select.form-control option{background:var(--surface)}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);
+  backdrop-filter:blur(4px);z-index:200;
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+.modal-overlay.open{display:flex}
+.modal{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:2rem;
+  width:100%;max-width:540px;
+  animation:modalIn .25s ease;
+  max-height:90vh;overflow-y:auto;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-title{
+  font-family:'Bebas Neue',sans-serif;font-size:1.8rem;
+  margin-bottom:1.5rem;color:var(--text);
+}
+.modal-close{
+  position:absolute;top:1rem;right:1rem;
+  background:none;border:none;color:var(--muted);
+  font-size:1.5rem;cursor:pointer;
+}
+
+/* ── TABLE ── */
+.data-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.data-table th{
+  text-align:left;padding:.6rem .8rem;
+  font-size:.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;
+  color:var(--muted);border-bottom:1px solid var(--border);
+}
+.data-table td{
+  padding:.75rem .8rem;border-bottom:1px solid rgba(30,43,30,.5);
+}
+.data-table tr:hover td{background:rgba(42,255,107,.03)}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:9999;
+  display:flex;flex-direction:column;gap:.5rem;
+}
+.toast-item{
+  padding:.8rem 1.2rem;border-radius:8px;
+  font-size:.85rem;font-weight:500;
+  border-left:3px solid var(--green);
+  background:var(--card);
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  animation:toastIn .3s ease;
+  max-width:300px;
+}
+.toast-item.error{border-left-color:var(--danger)}
+.toast-item.warn{border-left-color:var(--orange)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+
+/* ── NOTIF PANEL ── */
+.notif-item{
+  padding:1rem;border-bottom:1px solid var(--border);
+  display:flex;gap:.75rem;align-items:flex-start;
+}
+.notif-icon{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(42,255,107,.1);display:flex;align-items:center;justify-content:center;
+  font-size:1rem;flex-shrink:0;margin-top:.1rem;
+}
+.notif-item.unread{background:rgba(42,255,107,.03)}
+.notif-time{font-size:.72rem;color:var(--muted);margin-top:.2rem}
+
+/* ── LEADERBOARD ── */
+.leaderboard-row{
+  display:flex;align-items:center;gap:1rem;
+  padding:.8rem 1rem;border-radius:8px;
+  transition:background .2s;
+}
+.leaderboard-row:hover{background:var(--surface)}
+.rank-num{
+  font-family:'Bebas Neue',sans-serif;font-size:1.4rem;
+  width:2rem;text-align:center;color:var(--muted);
+}
+.rank-num.gold{color:var(--gold)}
+.rank-num.silver{color:#aaa}
+.rank-num.bronze{color:#cd7f32}
+
+/* ── TEAM DISPLAY ── */
+.team-col{
+  flex:1;padding:1.25rem;border-radius:8px;
+  background:var(--surface);border:1px solid var(--border);
+}
+.team-header{
+  font-family:'Bebas Neue',sans-serif;font-size:1.3rem;
+  margin-bottom:.75rem;display:flex;align-items:center;gap:.5rem;
+}
+.team-header.a{color:var(--green)}
+.team-header.b{color:var(--orange)}
+.player-chip{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.4rem .7rem;border-radius:20px;
+  background:var(--card);font-size:.82rem;margin-bottom:.4rem;
+}
+
+/* ── TABS WITHIN PAGE ── */
+.inner-tabs{display:flex;gap:.25rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);padding-bottom:.75rem}
+.inner-tab{
+  padding:.4rem .9rem;font-size:.82rem;border-radius:var(--radius);
+  background:none;border:none;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;
+  transition:all .2s;
+}
+.inner-tab.active{background:rgba(42,255,107,.1);color:var(--green)}
+
+/* ── EMPTY STATE ── */
+.empty{
+  text-align:center;padding:3rem 1rem;color:var(--muted);
+}
+.empty-icon{font-size:3rem;margin-bottom:.75rem;opacity:.4}
+.empty-text{font-size:.9rem}
+
+/* ── USER SWITCH ── */
+.user-switch{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.user-btn{
+  padding:.35rem .75rem;border-radius:20px;font-size:.78rem;
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.user-btn:hover{border-color:var(--green);color:var(--green)}
+.user-btn.active{background:rgba(42,255,107,.1);border-color:var(--green);color:var(--green)}
+
+/* ── SPINNER ── */
+.spinner{
+  display:inline-block;width:16px;height:16px;border-radius:50%;
+  border:2px solid var(--border);border-top-color:var(--green);
+  animation:spin .6s linear infinite;vertical-align:middle;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.flex{display:flex}
+.gap-1{gap:.5rem}
+.gap-2{gap:1rem}
+.items-center{align-items:center}
+.justify-between{justify-content:space-between}
+.mt-1{margin-top:.5rem}
+.mt-2{margin-top:1rem}
+.mb-1{margin-bottom:.5rem}
+.text-muted{color:var(--muted)}
+.text-green{color:var(--green)}
+.text-orange{color:var(--orange)}
+.text-sm{font-size:.82rem}
+.font-mono{font-family:'Space Mono',monospace}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Play<span>Connect</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="goPage('dashboard')">Dashboard</button>
+    <button class="nav-tab" onclick="goPage('matches')">Matches</button>
+    <button class="nav-tab" onclick="goPage('host')">Host</button>
+    <button class="nav-tab" onclick="goPage('profile')">Profile</button>
+    <button class="nav-tab" onclick="goPage('analytics')">Analytics</button>
+    <button class="nav-tab" onclick="goPage('notifications')">Notifications <span id="notif-count" style="display:none;background:var(--orange);color:#000;border-radius:10px;padding:1px 6px;font-size:.65rem;margin-left:.25rem"></span></button>
+  </div>
+  <div class="user-pill" onclick="goPage('profile')">
+    <div class="user-avatar" id="nav-avatar">AH</div>
+    <span id="nav-name">Ahad Hassan</span>
+    <div class="notif-dot" id="notif-pulse" style="display:none"></div>
+  </div>
+</nav>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- DASHBOARD -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="hero">
+    <div class="hero-label">⚡ Lahore Sports Network</div>
+    <h1 class="hero-title">Play More.<br><em>Connect Better.</em></h1>
+    <p class="hero-sub">Find open matches, join teams, and track your performance across Lahore's neighborhoods.</p>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <input class="search-input" id="global-search" placeholder="Search by sport (Cricket, Football…) or neighborhood (Model Town, DHA…)" onkeydown="if(event.key==='Enter')doSearch()"/>
+    <button class="btn btn-green" onclick="doSearch()">Search</button>
+    <button class="btn btn-ghost" onclick="clearSearch()">Clear</button>
+  </div>
+  <div id="search-results" style="display:none;margin-bottom:1.5rem">
+    <div class="section-title">Search <span>Results</span></div>
+    <div id="search-cards" class="grid-3"></div>
+  </div>
+
+  <!-- User switcher -->
+  <div style="margin-bottom:1rem">
+    <div class="text-sm text-muted mb-1">Viewing as:</div>
+    <div class="user-switch" id="user-switcher"></div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="grid-3 mb-1" style="margin-bottom:1.5rem">
+    <div class="card stat-card">
+      <div class="stat-num green" id="dash-wins">—</div>
+      <div class="stat-label">Wins</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num orange" id="dash-losses">—</div>
+      <div class="stat-label">Losses</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-num gold" id="dash-ties">—</div>
+      <div class="stat-label">Ties</div>
+    </div>
+  </div>
+
+  <!-- Upcoming matches -->
+  <div class="section-title">Your Upcoming <span>Matches</span></div>
+  <div id="dashboard-matches">
+    <div class="empty"><div class="empty-icon">🏟️</div><div class="empty-text">Loading…</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div class="section-title" style="margin-top:2rem">Smart <span>Suggestions</span></div>
+  <div id="dashboard-suggestions">
+    <div class="empty"><div class="empty-icon">💡</div><div class="empty-text">Loading…</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- ALL MATCHES -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="page-matches">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+    <div class="section-title" style="margin:0">All Open <span>Matches</span></div>
+    <button class="btn btn-orange btn-sm" onclick="loadOpenMatches()">↻ Refresh</button>
+  </div>
+  <div id="all-matches-grid" class="grid-3">
+    <div class="empty"><div class="empty-icon">⏳</div><div class="empty-text">Loading…</div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- HOST A MATCH -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="page-host">
+  <div class="section-title">Host a <span>Match</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label">Your User ID (Host)</label>
+          <select class="form-control" id="host-userid">
+            <option value="1">1 — Ahad Hassan</option>
+            <option value="2">2 — M. Yahya Ahmad</option>
+            <option value="3">3 — Muhammad Khubaib</option>
+            <option value="4">4 — Zaid Ahmed</option>
+            <option value="5">5 — Ali Raza</option>
+            <option value="6">6 — Sara Khan</option>
+            <option value="7">7 — Omar Malik</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sport</label>
+          <select class="form-control" id="host-sport">
+            <option value="1">Cricket</option>
+            <option value="2">Football</option>
+            <option value="3">Basketball</option>
+            <option value="4">Badminton</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Venue</label>
+          <select class="form-control" id="host-venue">
+            <option value="1">Model Town Park</option>
+            <option value="2">Street 5 Ground — Johar Town</option>
+            <option value="3">DHA Phase 6 Complex</option>
+            <option value="4">Gulberg Sports Area</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Start Time</label>
+          <input type="datetime-local" class="form-control" id="host-start"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Time</label>
+          <input type="datetime-local" class="form-control" id="host-end"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Age Category</label>
+          <select class="form-control" id="host-age">
+            <option value="19+">19+</option>
+            <option value="u19">Under 19</option>
+            <option value="u16">Under 16</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Max Players</label>
+          <input type="number" class="form-control" id="host-max" value="10" min="2" max="22"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Team Assignment Mode</label>
+          <select class="form-control" id="host-mode">
+            <option value="random">Random (auto-assign)</option>
+            <option value="self">Self-select</option>
+          </select>
+        </div>
+        <button class="btn btn-green" style="width:100%;margin-top:.5rem" onclick="hostMatch()">📣 Broadcast Match</button>
+      </div>
+    </div>
+    <div>
+      <div class="card" style="margin-bottom:1rem">
+        <div style="font-weight:600;margin-bottom:.75rem">⚡ Quick Tips</div>
+        <div class="text-sm text-muted" style="line-height:1.8">
+          • Random mode will auto-shuffle players into Team A & B<br>
+          • Self mode lets players pick their own team<br>
+          • Players on waitlist get auto-promoted when someone leaves<br>
+          • Age check is enforced automatically on join
+        </div>
+      </div>
+      <div class="card">
+        <div style="font-weight:600;margin-bottom:.75rem">🗂️ Match Management</div>
+        <div class="form-group">
+          <label class="form-label">Match ID to Manage</label>
+          <input type="number" class="form-control" id="manage-matchid" placeholder="e.g. 1"/>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          <button class="btn btn-ghost btn-sm" onclick="generateTeams()">🎲 Generate Teams (random)</button>
+          <button class="btn btn-ghost btn-sm" onclick="viewRoster()">👥 View Full Roster</button>
+          <button class="btn btn-ghost btn-sm" onclick="openResultModal()">🏆 Record Match Result</button>
+          <button class="btn btn-ghost btn-sm" onclick="viewTeams()">🔀 View Teams</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Roster / Teams display area -->
+  <div id="roster-area" style="margin-top:1.5rem;display:none">
+    <div class="section-title">Match <span>Roster</span></div>
+    <div id="roster-content"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- PROFILE -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="page-profile">
+  <div style="display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.5rem">
+    <div class="card" style="min-width:220px">
+      <div style="text-align:center;padding:.5rem 0 1rem">
+        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--orange));display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.6rem;margin:0 auto .75rem;" id="profile-avatar">AH</div>
+        <div style="font-weight:600;font-size:1.1rem" id="profile-name">Ahad Hassan</div>
+        <div class="text-muted text-sm" id="profile-email">ahad@test.com</div>
+        <div style="margin-top:.5rem" id="profile-status"></div>
+      </div>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="inner-tabs">
+        <button class="inner-tab active" onclick="profileTab('stats')">Stats</button>
+        <button class="inner-tab" onclick="profileTab('interests')">Interests</button>
+        <button class="inner-tab" onclick="profileTab('join')">Join Match</button>
+        <button class="inner-tab" onclick="profileTab('history')">Match History</button>
+      </div>
+
+      <div id="ptab-stats">
+        <div class="grid-3">
+          <div class="stat-card" style="padding:.75rem">
+            <div class="stat-num green" style="font-size:2rem" id="p-wins">—</div>
+            <div class="stat-label">Wins</div>
+          </div>
+          <div class="stat-card" style="padding:.75rem">
+            <div class="stat-num orange" style="font-size:2rem" id="p-losses">—</div>
+            <div class="stat-label">Losses</div>
+          </div>
+          <div class="stat-card" style="padding:.75rem">
+            <div class="stat-num gold" style="font-size:2rem" id="p-ties">—</div>
+            <div class="stat-label">Ties</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="ptab-interests" style="display:none">
+        <div id="interests-list" class="mb-1"></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <select class="form-control" id="new-sport" style="flex:1;min-width:120px">
+            <option value="1">Cricket</option>
+            <option value="2">Football</option>
+            <option value="3">Basketball</option>
+            <option value="4">Badminton</option>
+          </select>
+          <select class="form-control" id="new-skill" style="flex:1;min-width:120px">
+            <option value="casual">Casual</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="competitive">Competitive</option>
+          </select>
+          <button class="btn btn-green btn-sm" onclick="addInterest()">+ Add</button>
+        </div>
+      </div>
+
+      <div id="ptab-join" style="display:none">
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <input type="number" class="form-control" id="join-matchid" placeholder="Match ID to join" style="flex:1"/>
+          <button class="btn btn-green btn-sm" onclick="joinMatch()">Join Match</button>
+          <button class="btn btn-danger btn-sm" onclick="leaveMatch()">Leave Match</button>
+        </div>
+        <div id="join-info" class="text-sm text-muted mt-1"></div>
+      </div>
+
+      <div id="ptab-history" style="display:none">
+        <div id="match-history-list">
+          <div class="empty"><div class="empty-text">Loading match history…</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User switcher -->
+  <div class="text-sm text-muted mb-1">Switch Profile:</div>
+  <div class="user-switch" id="profile-user-switcher"></div>
+
+  <!-- Register new user -->
+  <div style="margin-top:1.5rem">
+    <div class="section-title">Register <span>New User</span></div>
+    <div class="card">
+      <div class="grid-2">
+        <div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-control" id="reg-name" placeholder="Muhammad Ali"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-control" id="reg-email" type="email" placeholder="ali@example.com"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input class="form-control" id="reg-dob" type="date"/>
+          </div>
+        </div>
+        <div>
+          <div class="form-group">
+            <label class="form-label">Latitude</label>
+            <input class="form-control" id="reg-lat" placeholder="31.4900" type="number" step="any"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Longitude</label>
+            <input class="form-control" id="reg-lng" placeholder="74.3200" type="number" step="any"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location Address</label>
+            <input class="form-control" id="reg-addr" placeholder="Model Town, Lahore"/>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-orange" onclick="registerUser()">Register User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- ANALYTICS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="page-analytics">
+  <div class="section-title">City <span>Analytics</span></div>
+  <div class="grid-2">
+    <div>
+      <div class="section-title" style="font-size:1.2rem">🔥 Venue <span>Heatmap</span></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="heatmap-list"></div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title" style="font-size:1.2rem">🏆 Neighborhood <span>Leaderboard</span></div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div id="leaderboard-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Venues table -->
+  <div style="margin-top:1.5rem">
+    <div class="section-title">All <span>Venues</span></div>
+    <div class="card" style="overflow:auto">
+      <table class="data-table" id="venues-table">
+        <thead><tr><th>Name</th><th>Type</th><th>Neighborhood</th><th>Address</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- NOTIFICATIONS -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="page" id="page-notifications">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+    <div class="section-title" style="margin:0">Your <span>Notifications</span></div>
+    <button class="btn btn-ghost btn-sm" onclick="loadNotifications()">↻ Refresh</button>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div id="notif-list">
+      <div class="empty" style="padding:2rem"><div class="empty-icon">🔔</div><div class="empty-text">Loading…</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL — RESULT -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="result-modal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal('result-modal')">×</button>
+    <div class="modal-title">Record Match <span style="color:var(--green)">Result</span></div>
+    <div class="form-group">
+      <label class="form-label">Match ID</label>
+      <input class="form-control" id="result-matchid" type="number" placeholder="Match ID"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Winner</label>
+      <select class="form-control" id="result-winner">
+        <option value="a">Team A Wins</option>
+        <option value="b">Team B Wins</option>
+        <option value="tie">Tie</option>
+      </select>
+    </div>
+    <button class="btn btn-green" style="width:100%" onclick="submitResult()">Record Result</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- MODAL — MATCH DETAIL -->
+<!-- ══════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="match-modal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal('match-modal')">×</button>
+    <div class="modal-title" id="mm-title">Match Details</div>
+    <div id="mm-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────
+const API = 'http://localhost:3000/api';
+let currentUser = { id:1, name:'Ahad Hassan', email:'ahad@test.com', initials:'AH', status:'verified' };
+
+const USERS = [
+  {id:1,name:'Ahad Hassan',     email:'ahad@test.com',    initials:'AH',status:'verified'},
+  {id:2,name:'M. Yahya Ahmad',  email:'yahya@test.com',   initials:'MY',status:'verified'},
+  {id:3,name:'M. Khubaib',      email:'khubaib@test.com', initials:'MK',status:'unverified'},
+  {id:4,name:'Zaid Ahmed',      email:'zaid@test.com',    initials:'ZA',status:'unverified'},
+  {id:5,name:'Ali Raza',        email:'ali@test.com',     initials:'AR',status:'verified'},
+  {id:6,name:'Sara Khan',       email:'sara@test.com',    initials:'SK',status:'verified'},
+  {id:7,name:'Omar Malik',      email:'omar@test.com',    initials:'OM',status:'unverified'},
+];
+
+const SPORT_EMOJI = {Cricket:'🏏',Football:'⚽',Basketball:'🏀',Badminton:'🏸'};
+const NOTIF_ICON = {
+  general:'📢', match_invite:'📩', team_assigned:'🎽',
+  match_update:'📋', match_canceled:'❌', result_posted:'🏆'
+};
+
+// ─── TOAST ────────────────────────────────────────────────
+function toast(msg, type='success') {
+  const el = document.createElement('div');
+  el.className = `toast-item${type==='error'?' error':type==='warn'?' warn':''}`;
+  el.textContent = msg;
+  document.getElementById('toast').appendChild(el);
+  setTimeout(()=>el.style.opacity='0',3000);
+  setTimeout(()=>el.remove(),3400);
+}
+
+// ─── API HELPER ───────────────────────────────────────────
+async function api(method, path, body) {
+  const opts = {method, headers:{'Content-Type':'application/json'}};
+  if(body) opts.body = JSON.stringify(body);
+  const r = await fetch(API+path, opts);
+  const data = await r.json();
+  return {ok:r.ok, status:r.status, data};
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────
+function goPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t=>{
+    if(t.getAttribute('onclick').includes(name)) t.classList.add('active');
+  });
+  if(name==='dashboard') loadDashboard();
+  if(name==='matches')   loadOpenMatches();
+  if(name==='analytics') loadAnalytics();
+  if(name==='notifications') loadNotifications();
+  if(name==='profile')   loadProfile();
+}
+
+// ─── USER SWITCHING ───────────────────────────────────────
+function buildUserSwitchers() {
+  ['user-switcher','profile-user-switcher'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = USERS.map(u=>`
+      <button class="user-btn${u.id===currentUser.id?' active':''}" 
+              onclick="switchUser(${u.id})">${u.name.split(' ')[0]}</button>
+    `).join('');
+  });
+}
+
+function switchUser(id) {
+  currentUser = USERS.find(u=>u.id===id);
+  document.getElementById('nav-avatar').textContent = currentUser.initials;
+  document.getElementById('nav-name').textContent = currentUser.name;
+  buildUserSwitchers();
+  const activePage = document.querySelector('.page.active').id.replace('page-','');
+  if(activePage==='dashboard') loadDashboard();
+  if(activePage==='profile') loadProfile();
+  if(activePage==='notifications') loadNotifications();
+  toast(`Switched to ${currentUser.name}`);
+}
+
+// ─── DATE FORMAT ──────────────────────────────────────────
+function fdt(dt) {
+  if(!dt) return '—';
+  const d = new Date(dt);
+  return d.toLocaleDateString('en-PK',{weekday:'short',month:'short',day:'numeric'})
+       + ' · '
+       + d.toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit'});
+}
+
+function timeAgo(dt) {
+  const diff = Date.now() - new Date(dt);
+  const m = Math.floor(diff/60000);
+  if(m<1) return 'Just now';
+  if(m<60) return m+'m ago';
+  const h = Math.floor(m/60);
+  if(h<24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+
+// ─── STATUS BADGE ─────────────────────────────────────────
+function statusBadge(s) {
+  return `<span class="status-badge status-${s}">${s}</span>`;
+}
+
+// ─── MATCH CARD ───────────────────────────────────────────
+function matchCard(m, showJoin=false) {
+  const pct = m.maxplayers ? Math.min(100, Math.round(m.currentplayers/m.maxplayers*100)) : 0;
+  const sport = SPORT_EMOJI[m.sportname]||'🎮';
+  return `
+  <div class="card match-card">
+    <div class="flex items-center justify-between mb-1">
+      <span class="sport-badge">${sport} ${m.sportname||''}</span>
+      ${statusBadge(m.matchstatus||m.status||'open')}
+    </div>
+    <div style="font-weight:600;margin:.4rem 0">${m.venuename||''}</div>
+    <div class="match-meta">
+      <span>📅 ${fdt(m.starttime)}</span>
+      <span>👥 ${m.currentplayers??'?'}/${m.maxplayers??'?'}</span>
+      ${m.agecategory?`<span>🔞 ${m.agecategory}</span>`:''}
+      ${m.assignmentmode?`<span>🎲 ${m.assignmentmode}</span>`:''}
+      ${m.hostname?`<span>🎤 ${m.hostname}</span>`:''}
+    </div>
+    <div class="capacity-bar">
+      <div class="capacity-fill" style="width:${pct}%"></div>
+    </div>
+    <div style="font-size:.72rem;color:var(--muted);margin-top:.25rem">${m.currentplayers??0} / ${m.maxplayers??0} players</div>
+    ${showJoin && (m.matchstatus==='open'||m.status==='open') ? `
+      <div style="margin-top:.75rem;display:flex;gap:.5rem">
+        <button class="btn btn-green btn-sm" onclick="quickJoin(${m.matchid})">Join</button>
+        <button class="btn btn-ghost btn-sm" onclick="openMatchDetail(${m.matchid})">Details</button>
+      </div>` : `
+      <div style="margin-top:.75rem">
+        <button class="btn btn-ghost btn-sm" onclick="openMatchDetail(${m.matchid})">View Details</button>
+      </div>`}
+  </div>`;
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────
+async function loadDashboard() {
+  // Stats
+  const st = await api('GET',`/users/${currentUser.id}/stats`);
+  if(st.ok) {
+    const d = st.data;
+    document.getElementById('dash-wins').textContent   = d.wins??0;
+    document.getElementById('dash-losses').textContent = d.losses??0;
+    document.getElementById('dash-ties').textContent   = d.ties??0;
+  }
+
+  // Upcoming
+  const up = await api('GET',`/users/${currentUser.id}/dashboard`);
+  const upEl = document.getElementById('dashboard-matches');
+  if(up.ok && up.data.length) {
+    upEl.innerHTML = `<div class="grid-3">${up.data.map(m=>matchCard(m)).join('')}</div>`;
+  } else {
+    upEl.innerHTML = `<div class="empty"><div class="empty-icon">🏟️</div><div class="empty-text">No upcoming matches</div></div>`;
+  }
+
+  // Suggestions
+  const sg = await api('GET',`/users/${currentUser.id}/suggestions`);
+  const sgEl = document.getElementById('dashboard-suggestions');
+  if(sg.ok && sg.data.length) {
+    sgEl.innerHTML = `<div class="grid-3">${sg.data.map(m=>matchCard(m,true)).join('')}</div>`;
+  } else {
+    sgEl.innerHTML = `<div class="empty"><div class="empty-icon">💡</div><div class="empty-text">No suggestions yet — add some interests in your Profile!</div></div>`;
+  }
+
+  // Notif count
+  const nf = await api('GET',`/users/${currentUser.id}/notifications`);
+  if(nf.ok) {
+    const unread = nf.data.filter(n=>!n.isread).length;
+    const dot = document.getElementById('notif-pulse');
+    const cnt = document.getElementById('notif-count');
+    if(unread>0){dot.style.display='block';cnt.style.display='inline';cnt.textContent=unread}
+    else{dot.style.display='none';cnt.style.display='none'}
+  }
+}
+
+// ─── SEARCH ───────────────────────────────────────────────
+async function doSearch() {
+  const term = document.getElementById('global-search').value.trim();
+  if(!term) return;
+  const r = await api('GET',`/search?term=${encodeURIComponent(term)}`);
+  document.getElementById('search-results').style.display='block';
+  const el = document.getElementById('search-cards');
+  if(r.ok && r.data.length) {
+    el.innerHTML = r.data.map(m=>matchCard(m,true)).join('');
+  } else {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No matches found for "${term}"</div></div>`;
+  }
+}
+function clearSearch() {
+  document.getElementById('global-search').value='';
+  document.getElementById('search-results').style.display='none';
+}
+
+// ─── ALL MATCHES ──────────────────────────────────────────
+async function loadOpenMatches() {
+  const r = await api('GET','/matches/open');
+  const el = document.getElementById('all-matches-grid');
+  if(r.ok && r.data.length) {
+    el.innerHTML = r.data.map(m=>matchCard(m,true)).join('');
+  } else {
+    el.innerHTML = `<div class="empty"><div class="empty-icon">🏟️</div><div class="empty-text">No open matches right now</div></div>`;
+  }
+}
+
+// ─── QUICK JOIN ───────────────────────────────────────────
+async function quickJoin(matchId) {
+  const r = await api('POST',`/matches/${matchId}/join`,{userid:currentUser.id});
+  if(r.ok) {
+    toast(r.data.message||'Joined successfully!');
+    loadOpenMatches(); loadDashboard();
+  } else {
+    toast(r.data.error||'Could not join','error');
+  }
+}
+
+// ─── PROFILE ──────────────────────────────────────────────
+async function loadProfile() {
+  document.getElementById('profile-avatar').textContent = currentUser.initials;
+  document.getElementById('profile-name').textContent   = currentUser.name;
+  document.getElementById('profile-email').textContent  = currentUser.email;
+  document.getElementById('profile-status').innerHTML   =
+    currentUser.status==='verified'
+      ? `<span class="status-badge status-open">✓ Verified</span>`
+      : `<span class="status-badge status-completed">Unverified</span>`;
+
+  // Stats
+  const st = await api('GET',`/users/${currentUser.id}/stats`);
+  if(st.ok) {
+    document.getElementById('p-wins').textContent   = st.data.wins??0;
+    document.getElementById('p-losses').textContent = st.data.losses??0;
+    document.getElementById('p-ties').textContent   = st.data.ties??0;
+  }
+
+  // Interests
+  loadInterests();
+
+  // History
+  const h = await api('GET',`/users/${currentUser.id}/dashboard`);
+  const hEl = document.getElementById('match-history-list');
+  if(h.ok && h.data.length) {
+    hEl.innerHTML = `<table class="data-table">
+      <thead><tr><th>Match ID</th><th>Sport</th><th>Start</th><th>Team</th><th>Status</th></tr></thead>
+      <tbody>${h.data.map(m=>`<tr>
+        <td class="font-mono">#${m.matchid}</td>
+        <td>${SPORT_EMOJI[m.sportname]||''} ${m.sportname}</td>
+        <td>${fdt(m.starttime)}</td>
+        <td>${m.teamname?`<span class="status-badge" style="background:rgba(42,255,107,.1);color:var(--green)">${m.teamname}</span>`:'—'}</td>
+        <td>${statusBadge(m.status||'confirmed')}</td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } else {
+    hEl.innerHTML = `<div class="empty"><div class="empty-text">No match history yet</div></div>`;
+  }
+}
+
+async function loadInterests() {
+  const r = await api('GET',`/users/${currentUser.id}/interests`);
+  const el = document.getElementById('interests-list');
+  if(r.ok && r.data.length) {
+    el.innerHTML = r.data.map(i=>`
+      <div class="player-chip" style="margin-bottom:.4rem">
+        ${SPORT_EMOJI[i.sportname]||'🎮'} ${i.sportname}
+        <span class="text-muted text-sm">— ${i.skilllevel}</span>
+      </div>`).join('');
+  } else {
+    el.innerHTML = `<div class="text-muted text-sm mb-1">No interests added yet</div>`;
+  }
+}
+
+async function addInterest() {
+  const sportid   = document.getElementById('new-sport').value;
+  const skilllevel = document.getElementById('new-skill').value;
+  const r = await api('POST',`/users/${currentUser.id}/interests`,{sportid:+sportid,skilllevel});
+  if(r.ok) { toast('Interest added!'); loadInterests(); }
+  else toast(r.data.error||'Already added','error');
+}
+
+function profileTab(name) {
+  ['stats','interests','join','history'].forEach(t=>{
+    document.getElementById('ptab-'+t).style.display = t===name?'block':'none';
+  });
+  document.querySelectorAll('.inner-tab').forEach((t,i)=>{
+    const tabs=['stats','interests','join','history'];
+    t.classList.toggle('active', tabs[i]===name);
+  });
+  if(name==='history') loadProfile();
+}
+
+async function joinMatch() {
+  const id = document.getElementById('join-matchid').value;
+  if(!id) return toast('Enter a match ID','warn');
+  const r = await api('POST',`/matches/${id}/join`,{userid:currentUser.id});
+  const el = document.getElementById('join-info');
+  if(r.ok) { toast(r.data.message); el.textContent=r.data.message; }
+  else { toast(r.data.error,'error'); el.textContent=r.data.error; }
+}
+
+async function leaveMatch() {
+  const id = document.getElementById('join-matchid').value;
+  if(!id) return toast('Enter a match ID','warn');
+  const r = await api('POST',`/matches/${id}/leave`,{userid:currentUser.id});
+  if(r.ok) toast(r.data.message);
+  else toast(r.data.error,'error');
+}
+
+async function registerUser() {
+  const body = {
+    fullname: document.getElementById('reg-name').value,
+    email:    document.getElementById('reg-email').value,
+    dateofbirth: document.getElementById('reg-dob').value,
+    latitude:  parseFloat(document.getElementById('reg-lat').value),
+    longitude: parseFloat(document.getElementById('reg-lng').value),
+    locationaddress: document.getElementById('reg-addr').value,
+  };
+  if(!body.fullname||!body.email||!body.latitude||!body.longitude) return toast('Fill in all required fields','warn');
+  const r = await api('POST','/users',body);
+  if(r.ok) toast('User registered! 🎉');
+  else toast(r.data.error,'error');
+}
+
+// ─── HOST MATCH ───────────────────────────────────────────
+async function hostMatch() {
+  const body = {
+    hostuserid:     +document.getElementById('host-userid').value,
+    sportid:        +document.getElementById('host-sport').value,
+    venueid:        +document.getElementById('host-venue').value,
+    starttime:       document.getElementById('host-start').value,
+    endtime:         document.getElementById('host-end').value,
+    agecategory:     document.getElementById('host-age').value,
+    maxplayers:     +document.getElementById('host-max').value,
+    assignmentmode:  document.getElementById('host-mode').value,
+  };
+  if(!body.starttime||!body.endtime) return toast('Select start & end times','warn');
+  const r = await api('POST','/matches',body);
+  if(r.ok) toast('Match broadcasted! 📣');
+  else toast(r.data.error,'error');
+}
+
+// ─── MANAGE MATCH ─────────────────────────────────────────
+async function generateTeams() {
+  const id = document.getElementById('manage-matchid').value;
+  if(!id) return toast('Enter a match ID','warn');
+  const r = await api('POST',`/matches/${id}/generate-teams`,{});
+  if(r.ok) toast(r.data.message||'Teams generated!');
+  else toast(r.data.error,'error');
+}
+
+async function viewRoster() {
+  const id = document.getElementById('manage-matchid').value;
+  if(!id) return toast('Enter a match ID','warn');
+  const r = await api('GET',`/matches/${id}/roster`);
+  document.getElementById('roster-area').style.display='block';
+  const el = document.getElementById('roster-content');
+  if(r.ok && r.data.length) {
+    el.innerHTML = `<div class="card" style="overflow:auto"><table class="data-table">
+      <thead><tr><th>Player</th><th>Team</th><th>Status</th><th>Joined</th></tr></thead>
+      <tbody>${r.data.map(p=>`<tr>
+        <td>${p.playername||p.fullname||'—'}</td>
+        <td>${p.teamname?`<span class="status-badge status-open">${p.teamname}</span>`:'—'}</td>
+        <td>${statusBadge(p.participantstatus||p.status||'confirmed')}</td>
+        <td>${timeAgo(p.joinedat)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  } else {
+    el.innerHTML = `<div class="empty"><div class="empty-text">${r.data.error||'No participants yet'}</div></div>`;
+  }
+}
+
+async function viewTeams() {
+  const id = document.getElementById('manage-matchid').value;
+  if(!id) return toast('Enter a match ID','warn');
+  const r = await api('GET',`/matches/${id}/teams`);
+  document.getElementById('roster-area').style.display='block';
+  const el = document.getElementById('roster-content');
+  if(r.ok && r.data.length) {
+    const teamA = r.data.filter(p=>p.teamlabel==='a');
+    const teamB = r.data.filter(p=>p.teamlabel==='b');
+    el.innerHTML = `<div class="flex gap-2">
+      <div class="team-col">
+        <div class="team-header a">⚡ Team A</div>
+        ${teamA.length ? teamA.map(p=>`<div class="player-chip">👤 ${p.fullname}</div>`).join('') : '<div class="text-muted text-sm">No players assigned</div>'}
+      </div>
+      <div class="team-col">
+        <div class="team-header b">🔥 Team B</div>
+        ${teamB.length ? teamB.map(p=>`<div class="player-chip">👤 ${p.fullname}</div>`).join('') : '<div class="text-muted text-sm">No players assigned</div>'}
+      </div>
+    </div>`;
+  } else {
+    el.innerHTML = `<div class="empty"><div class="empty-text">${r.data.error||'No teams yet — generate teams first'}</div></div>`;
+  }
+}
+
+function openResultModal() {
+  const id = document.getElementById('manage-matchid').value;
+  if(id) document.getElementById('result-matchid').value = id;
+  document.getElementById('result-modal').classList.add('open');
+}
+
+async function submitResult() {
+  const matchId = document.getElementById('result-matchid').value;
+  const winner  = document.getElementById('result-winner').value;
+  if(!matchId) return toast('Enter a match ID','warn');
+  const r = await api('POST',`/matches/${matchId}/result`,{winnerteamlabel:winner});
+  if(r.ok) { toast(r.data.message||'Result recorded!'); closeModal('result-modal'); }
+  else toast(r.data.error,'error');
+}
+
+// ─── MATCH DETAIL MODAL ───────────────────────────────────
+async function openMatchDetail(matchId) {
+  document.getElementById('match-modal').classList.add('open');
+  document.getElementById('mm-title').textContent = `Match #${matchId}`;
+  const el = document.getElementById('mm-body');
+  el.innerHTML = '<div class="spinner"></div>';
+
+  const [roster, teams, scorecard] = await Promise.all([
+    api('GET',`/matches/${matchId}/roster`),
+    api('GET',`/matches/${matchId}/teams`),
+    api('GET',`/matches/${matchId}/scorecard`),
+  ]);
+
+  let html = '';
+
+  // Basic info from roster
+  if(roster.ok && roster.data.length) {
+    const first = roster.data[0];
+    html += `<div class="match-meta">
+      <span>🏏 ${first.sportname}</span>
+      <span>📍 ${first.venuename}</span>
+      <span>📅 ${fdt(first.starttime)}</span>
+      <span>👤 Host: ${first.hostname}</span>
+      <span>👥 ${first.currentplayers}/${first.maxplayers}</span>
+      ${statusBadge(first.matchstatus)}
+    </div>`;
+  }
+
+  // Teams
+  if(teams.ok && teams.data.length) {
+    const teamA = teams.data.filter(p=>p.teamlabel==='a');
+    const teamB = teams.data.filter(p=>p.teamlabel==='b');
+    html += `<div style="margin-top:1rem"><div style="font-weight:600;margin-bottom:.5rem">Teams</div>
+      <div class="flex gap-2">
+        <div class="team-col">
+          <div class="team-header a">Team A</div>
+          ${teamA.map(p=>`<div class="player-chip">👤 ${p.fullname}</div>`).join('') || '<div class="text-muted text-sm">—</div>'}
+        </div>
+        <div class="team-col">
+          <div class="team-header b">Team B</div>
+          ${teamB.map(p=>`<div class="player-chip">👤 ${p.fullname}</div>`).join('') || '<div class="text-muted text-sm">—</div>'}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Scorecard
+  if(scorecard.ok && scorecard.data.length) {
+    html += `<div style="margin-top:1rem"><div style="font-weight:600;margin-bottom:.5rem">Scorecard</div>
+      <table class="data-table">
+        <thead><tr><th>Player</th><th>Team</th><th>Result</th></tr></thead>
+        <tbody>${scorecard.data.map(s=>`<tr>
+          <td>${s.fullname}</td>
+          <td>${s.teamname||'—'}</td>
+          <td>${statusBadge(s.result)}</td>
+        </tr>`).join('')}</tbody>
+      </table>
+    </div>`;
+  }
+
+  // Join/Leave actions
+  html += `<div style="margin-top:1.25rem;display:flex;gap:.5rem">
+    <button class="btn btn-green btn-sm" onclick="quickJoin(${matchId});closeModal('match-modal')">Join</button>
+    <button class="btn btn-danger btn-sm" onclick="leaveMatchId(${matchId})">Leave</button>
+  </div>`;
+
+  el.innerHTML = html || '<div class="empty"><div class="empty-text">No data available</div></div>';
+}
+
+async function leaveMatchId(matchId) {
+  const r = await api('POST',`/matches/${matchId}/leave`,{userid:currentUser.id});
+  if(r.ok) { toast(r.data.message); closeModal('match-modal'); loadDashboard(); }
+  else toast(r.data.error,'error');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ─── ANALYTICS ────────────────────────────────────────────
+async function loadAnalytics() {
+  // Heatmap
+  const hm = await api('GET','/analytics/heatmap');
+  const hmEl = document.getElementById('heatmap-list');
+  if(hm.ok && hm.data.length) {
+    const max = hm.data[0].TotalMatches||1;
+    hmEl.innerHTML = hm.data.map((v,i)=>`
+      <div class="leaderboard-row">
+        <div class="rank-num ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:.9rem">${v.venuename}</div>
+          <div class="text-muted text-sm">${v.neighborhood}</div>
+          <div class="capacity-bar" style="margin-top:.35rem">
+            <div class="capacity-fill" style="width:${Math.round(v.TotalMatches/max*100)}%"></div>
+          </div>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--green)">${v.TotalMatches}</div>
+      </div>`).join('');
+  } else {
+    hmEl.innerHTML = '<div class="empty" style="padding:2rem"><div class="empty-text">No data</div></div>';
+  }
+
+  // Leaderboard
+  const lb = await api('GET','/analytics/leaderboard');
+  const lbEl = document.getElementById('leaderboard-list');
+  if(lb.ok && lb.data.length) {
+    lbEl.innerHTML = lb.data.map((v,i)=>`
+      <div class="leaderboard-row">
+        <div class="rank-num ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+        <div style="flex:1">
+          <div style="font-weight:600;font-size:.9rem">${v.neighborhood}</div>
+          <div class="text-muted text-sm">${v.TotalMatchesPlayed} completed match${v.TotalMatchesPlayed!==1?'es':''}</div>
+        </div>
+        <div style="font-size:1.8rem">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'🏅'}</div>
+      </div>`).join('');
+  } else {
+    lbEl.innerHTML = '<div class="empty" style="padding:2rem"><div class="empty-text">No data</div></div>';
+  }
+
+  // Venues table
+  const vn = await api('GET','/venues');
+  const tbody = document.querySelector('#venues-table tbody');
+  if(vn.ok && vn.data.length) {
+    tbody.innerHTML = vn.data.map(v=>`<tr>
+      <td style="font-weight:500">${v.venuename}</td>
+      <td><span class="status-badge" style="background:rgba(107,129,107,.1);color:var(--muted)">${v.venuetype}</span></td>
+      <td>${v.neighborhood}</td>
+      <td class="text-muted text-sm">${v.locationaddress||'—'}</td>
+    </tr>`).join('');
+  }
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────
+async function loadNotifications() {
+  const r = await api('GET',`/users/${currentUser.id}/notifications`);
+  const el = document.getElementById('notif-list');
+  if(r.ok && r.data.length) {
+    el.innerHTML = r.data.map(n=>`
+      <div class="notif-item${n.isread?'':' unread'}" id="notif-${n.notificationid}">
+        <div class="notif-icon">${NOTIF_ICON[n.notificationtype]||'📢'}</div>
+        <div style="flex:1">
+          <div style="font-size:.88rem;font-weight:${n.isread?400:500}">${n.message}</div>
+          <div class="notif-time">${timeAgo(n.createdat)} · ${n.notificationtype.replace(/_/g,' ')}</div>
+        </div>
+        ${!n.isread?`<button class="btn btn-ghost btn-sm" onclick="markRead(${n.notificationid})">Mark read</button>`:'<span class="text-muted text-sm">✓</span>'}
+      </div>`).join('');
+  } else {
+    el.innerHTML = `<div class="empty" style="padding:3rem"><div class="empty-icon">🔔</div><div class="empty-text">All caught up!</div></div>`;
+  }
+}
+
+async function markRead(id) {
+  await api('PATCH',`/notifications/${id}/read`);
+  document.getElementById('notif-'+id).classList.remove('unread');
+  document.querySelector(`#notif-${id} button`)?.remove();
+  loadDashboard(); // refresh dot
+}
+
+// ─── CLOSE MODAL ON OVERLAY CLICK ────────────────────────
+document.querySelectorAll('.modal-overlay').forEach(o=>{
+  o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); });
+});
+
+// ─── INIT ─────────────────────────────────────────────────
+(function init(){
+  // Pre-fill host-start with tomorrow
+  const tmr = new Date(); tmr.setDate(tmr.getDate()+1);
+  const fmt = tmr.toISOString().slice(0,16);
+  document.getElementById('host-start').value = fmt;
+  const end = new Date(tmr); end.setHours(end.getHours()+2);
+  document.getElementById('host-end').value = end.toISOString().slice(0,16);
+
+  buildUserSwitchers();
+  loadDashboard();
+})();
+</script>
+</body>
+</html>
